@@ -8,9 +8,9 @@ package edu.wpi.first.wpilibj.templates.commands;
  *
  * @author team348
  */
-public class ExampleCommand extends CommandBase {
+public class Shoot extends CommandBase {
     
-    public ExampleCommand() {
+    public Shoot() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
