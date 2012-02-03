@@ -25,14 +25,14 @@ public class Compressor extends Subsystem {
     }
     
     public void start() {
-        
+        compressor.set(Relay.Value.kOn);
     }
     
     public void stop() {
-        
+        compressor.set(Relay.Value.kOff);
     }
     
     public boolean isFull() {
-        
+        return !pressureSwitch.get();
     }
 }

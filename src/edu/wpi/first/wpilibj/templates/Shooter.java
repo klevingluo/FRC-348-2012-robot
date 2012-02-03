@@ -25,4 +25,9 @@ public class Shooter extends Subsystem {
     public void shoot() {
         
     }
+    
+    public void loadBall() {
+        
+    }
+    
 }

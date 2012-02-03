@@ -5,7 +5,12 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.camera.AxisCamera;
+import edu.wpi.first.wpilibj.camera.AxisCameraException;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.image.ColorImage;
+import edu.wpi.first.wpilibj.image.EllipseMatch;
+import edu.wpi.first.wpilibj.image.MonoImage;
+import edu.wpi.first.wpilibj.image.NIVisionException;
 
 /**
  *
@@ -15,6 +20,8 @@ public class Camera extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
     AxisCamera camera;
+    EllipseMatch ball;
+    ColorImage pic;
     
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
@@ -22,10 +29,32 @@ public class Camera extends Subsystem {
     }
     
     public void findBall() {
-        
+        try {
+            ColorImage scan = camera.getImage();
+            MonoImage plane = scan.getLuminancePlane();
+            EllipseMatch[] balls = plane.detectEllipses(null);
+            ball = getLargest(balls);
+        } 
+        catch (NIVisionException ex) {System.out.println("ball not found");}
+        catch (AxisCameraException ex) {System.out.println("camera unresponsive");}
     }
     
     public void trackBall() {
         
+    }
+    /**
+     * 
+     * @return a positive # if ball is to the right of the camera; negative if it it to the left, and zero if in front
+     */
+    public int getBallDirection() {
+
+    }
+    
+    private EllipseMatch getLargest(EllipseMatch[] list) {
+        int max = 0;
+        for (int i=1; i < list.length; i++)
+            if (list[i].m_majorRadius > list[max].m_majorRadius)
+                max = i;
+        return list[max];
     }
 }

@@ -30,6 +30,7 @@ public class RobotMap {
             compressor      = 1,
             steeringPuck    = 2,
             shooterGate     = 3,
+            brakes          = 4,
         // digital inputs
             pressureSwitch  = 1;
     
