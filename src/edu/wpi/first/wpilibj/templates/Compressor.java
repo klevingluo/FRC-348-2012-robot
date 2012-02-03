@@ -17,6 +17,7 @@ public class Compressor extends Subsystem {
     // here. Call these from Commands.
     protected Relay compressor;
     protected DigitalInput pressureSwitch;
+    private boolean on;
     
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
@@ -31,4 +32,7 @@ public class Compressor extends Subsystem {
         
     }
     
+    public boolean isFull() {
+        
+    }
 }
