@@ -43,11 +43,8 @@ public class Drivetrain extends Subsystem {
         
         try {
             
-            for(int i = 0; i < leftDrive.length; i++) {
-                
+            for(int i = 0; i < leftDrive.length; i++)          
                 leftDrive[i].setX(x);
-                
-            }
         
         } catch (Exception ex) {
             
@@ -61,11 +58,8 @@ public class Drivetrain extends Subsystem {
         
         try {
             
-            for(int i = 0; i < leftDrive.length; i++) {
-                
+            for(int i = 0; i < leftDrive.length; i++)
                 rightDrive[i].setX(x);
-                
-            }
         
         } catch (Exception ex) {
             
