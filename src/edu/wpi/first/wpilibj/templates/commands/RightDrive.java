@@ -8,11 +8,18 @@ package edu.wpi.first.wpilibj.templates.commands;
  *
  * @author team348
  */
-public class ExampleCommand extends CommandBase {
+public class RightDrive extends CommandBase {
     
-    public ExampleCommand() {
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
+    double x = 0;
+    
+    public RightDrive() {
+        requires(drivetrain);
+    }
+    
+    public RightDrive(double x) {
+        requires(drivetrain);
+        this.x = x;
+        
     }
 
     // Called just before this Command runs the first time
@@ -21,6 +28,7 @@ public class ExampleCommand extends CommandBase {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+        drivetrain.moveRight(x);
     }
 
     // Make this return true when this Command no longer needs to run execute()

@@ -6,6 +6,7 @@ package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.templates.commands.LeftDrive;
 
 /**
  *
@@ -18,6 +19,6 @@ public class DriveTrain extends Subsystem {
     CANJaguar[] rightDrive = new CANJaguar[3];
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-        //setDefaultCommand(new MySpecialCommand());
+        setDefaultCommand(new LeftDrive());
     }
 }

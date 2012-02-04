@@ -4,6 +4,7 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -13,7 +14,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class BallIntake extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
-
+    private DigitalInput ballSwitch = new DigitalInput(RobotMap.ballSwitch);
+    
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
@@ -28,6 +30,7 @@ public class BallIntake extends Subsystem {
     }
     
     public boolean ballTaken() {
-        
+        if (ballSwitch.get()) return true;
+        else return false;
     }
 }

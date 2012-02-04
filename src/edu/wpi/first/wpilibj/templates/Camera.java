@@ -23,6 +23,9 @@ public class Camera extends Subsystem {
     EllipseMatch ball;
     ColorImage pic;
     
+    // some variable that corresponds to the acceptable offset for a ball to be considered "in front"
+    private static final int OFFSET = 9;
+    
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
@@ -47,7 +50,12 @@ public class Camera extends Subsystem {
      * @return a positive # if ball is to the right of the camera; negative if it it to the left, and zero if in front
      */
     public int getBallDirection() {
-
+        try {
+            if (Math.abs(pic.getWidth()/2 - ball.m_xPos) < OFFSET)
+                return 0;
+            return (int)(pic.getWidth()/2 - ball.m_xPos);
+        } catch (NIVisionException ex) {System.out.println("oops");}
+        return 0;
     }
     
     private EllipseMatch getLargest(EllipseMatch[] list) {
