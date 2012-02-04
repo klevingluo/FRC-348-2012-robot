@@ -27,7 +27,7 @@ public class Camera extends Subsystem {
     private static final int OFFSET = 9;
     
     public void initDefaultCommand() {
-        // Set the default command for a subsystem here.
+        camera = AxisCamera.getInstance("10.3.48.11");
         //setDefaultCommand(new MySpecialCommand());
     }
     
@@ -54,7 +54,7 @@ public class Camera extends Subsystem {
             if (Math.abs(pic.getWidth()/2 - ball.m_xPos) < OFFSET)
                 return 0;
             return (int)(pic.getWidth()/2 - ball.m_xPos);
-        } catch (NIVisionException ex) {System.out.println("oops");}
+        } catch (NIVisionException ex) {System.out.println("ball not found");}
         return 0;
     }
     
