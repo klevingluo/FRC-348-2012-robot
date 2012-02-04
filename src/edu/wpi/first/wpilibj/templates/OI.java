@@ -2,7 +2,8 @@ package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.templates.commands.*;
+import edu.wpi.first.wpilibj.templates.commands.LeftDrive;
+import edu.wpi.first.wpilibj.templates.commands.RightDrive;
 
 public class OI {
     // Process operator interface input here.

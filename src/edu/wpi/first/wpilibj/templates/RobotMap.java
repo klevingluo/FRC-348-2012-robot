@@ -28,6 +28,7 @@ public class RobotMap {
             rightDriveCIM2  = 6,
             rightDriveBB    = 7,
             shooterBB       = 8,
+            intakeRoller    = 9,
         // relays
             compressor      = 1,
             steeringPuck    = 2,

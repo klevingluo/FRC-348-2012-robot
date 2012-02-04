@@ -7,6 +7,7 @@ package edu.wpi.first.wpilibj.templates.subsystems;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.templates.RobotMap;
 
 /**
  *
@@ -20,6 +21,8 @@ public class Compressor extends Subsystem {
     private boolean on;
     
     public void initDefaultCommand() {
+        compressor = new Relay(RobotMap.compressor);
+        pressureSwitch = new DigitalInput(RobotMap.pressureSwitch);
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
     }
