@@ -31,17 +31,25 @@ public class Camera extends Subsystem {
         //setDefaultCommand(new MySpecialCommand());
     }
     
+    /*
+     * finds the largest ellipse in view and stores it locally
+     */
     public void findBall() {
         try {
             ColorImage scan = camera.getImage();
             MonoImage plane = scan.getLuminancePlane();
             EllipseMatch[] balls = plane.detectEllipses(null);
             ball = getLargest(balls);
+            scan.free();
+            plane.free();
         } 
         catch (NIVisionException ex) {System.out.println("ball not found");}
         catch (AxisCameraException ex) {System.out.println("camera unresponsive");}
     }
     
+    /*
+     * updates the location of the largest ball.
+     */
     public void trackBall() {
         
     }
@@ -58,6 +66,9 @@ public class Camera extends Subsystem {
         return 0;
     }
     
+    /*
+     * finds the largest ellipse in an array
+     */
     private EllipseMatch getLargest(EllipseMatch[] list) {
         int max = 0;
         for (int i=1; i < list.length; i++)

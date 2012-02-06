@@ -23,7 +23,7 @@ public class BallIntake extends Subsystem {
     
     public void initDefaultCommand() {
         try {
-            intakeRoller = new CANJaguar(RobotMap.intakeRoller);
+            intakeRoller = new CANJaguar(RobotMap.intakeRollerBB);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }

@@ -6,6 +6,7 @@ package edu.wpi.first.wpilibj.templates.subsystems;
 
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.templates.RobotMap;
 import edu.wpi.first.wpilibj.templates.commands.LeftDrive;
 
 /**
@@ -22,18 +23,14 @@ public class Drivetrain extends Subsystem {
     public void initDefaultCommand() {
         
         try {
-        
-            for(int i = 1; i <= leftDrive.length; i++) {
-                
-                leftDrive[i] = new CANJaguar(i,CANJaguar.ControlMode.kPercentVbus);
-                rightDrive[i] = new CANJaguar(i+3,CANJaguar.ControlMode.kPercentVbus);
-                
-            }
-        
-        } catch (Exception ex) {
-            
-            ex.printStackTrace();
-            
+            leftDrive[0] = new CANJaguar(RobotMap.leftDriveCIM1);
+            leftDrive[1] = new CANJaguar(RobotMap.leftDriveCIM2);
+            leftDrive[2] = new CANJaguar(RobotMap.leftDriveFP);
+            rightDrive[0] = new CANJaguar(RobotMap.rightDriveCIM1);
+            rightDrive[1] = new CANJaguar(RobotMap.rightDriveCIM2);
+            rightDrive[2] = new CANJaguar(RobotMap.rightDriveFP);
+        } catch (Exception ex) {    
+            ex.printStackTrace();  
         }
         
         setDefaultCommand(new LeftDrive());
@@ -41,15 +38,11 @@ public class Drivetrain extends Subsystem {
     
     public void moveLeft(double x) {
         
-        try {
-            
+        try {  
             for(int i = 0; i < leftDrive.length; i++)          
                 leftDrive[i].setX(x);
-        
-        } catch (Exception ex) {
-            
-            ex.printStackTrace();
-            
+        } catch (Exception ex) {       
+            ex.printStackTrace();   
         }
         
     }

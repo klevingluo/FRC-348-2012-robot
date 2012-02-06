@@ -21,14 +21,14 @@ public class RobotMap {
     
     public static final int
         // jaguars
-            leftDriveCIM1   = 1,
-            leftDriveCIM2   = 3,
-            leftDriveBB     = 4,
-            rightDriveCIM1  = 5,
-            rightDriveCIM2  = 6,
-            rightDriveBB    = 7,
-            shooterBB       = 8,
-            intakeRoller    = 9,
+            leftDriveCIM1   = 3,
+            leftDriveCIM2   = 4,
+            leftDriveFP     = 5,
+            rightDriveCIM1  = 6,
+            rightDriveCIM2  = 7,
+            rightDriveFP    = 8,
+            shooterBB       = 9,
+            intakeRollerBB  = 10,
         // relays
             compressor      = 1,
             steeringPuck    = 2,
@@ -36,11 +36,9 @@ public class RobotMap {
             brakes          = 4,
         // digital inputs
             pressureSwitch  = 1,
-            ballSwitch      = 2;
+            ballSwitch      = 2,
     // control elements
-    public static final Joystick.AxisType
-            leftDrive       = Joystick.AxisType.kY,
-            rightDrive      = Joystick.AxisType.kY;
-    public static final Joystick.ButtonType
-            shooter         = Joystick.ButtonType.kTrigger;
+            leftDrive       = 2,
+            rightDrive      = 3,
+            shooter         = 1;
 }

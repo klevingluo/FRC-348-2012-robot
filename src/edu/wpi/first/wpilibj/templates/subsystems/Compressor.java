@@ -21,21 +21,29 @@ public class Compressor extends Subsystem {
     private boolean on;
     
     public void initDefaultCommand() {
-        compressor = new Relay(RobotMap.compressor);
+        compressor = new Relay(RobotMap.compressor, Relay.Direction.kForward);
         pressureSwitch = new DigitalInput(RobotMap.pressureSwitch);
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
     }
     
     public void start() {
-        compressor.set(Relay.Value.kOn);
+        on = true;
     }
     
     public void stop() {
-        compressor.set(Relay.Value.kOff);
+        on = false;
     }
+    
     
     public boolean isFull() {
         return !pressureSwitch.get();
+    }
+    
+    public void check() {
+        if (!isFull() && on == true)
+            compressor.set(Relay.Value.kOn);
+        else
+            compressor.set(Relay.Value.kOff);
     }
 }
