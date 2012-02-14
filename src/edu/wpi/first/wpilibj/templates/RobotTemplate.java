@@ -8,10 +8,11 @@
 package edu.wpi.first.wpilibj.templates;
 
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Joystick;
+import java.util.Timer;
+import robotHardware.Drivetrain;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -56,6 +57,7 @@ public class RobotTemplate extends IterativeRobot {
     
     public static double FP_ACTIVATION_THRESHOLD = 0.7;
     
+    private Timer timer;
     private Jaguar rightDrive;
     private Jaguar leftDrive;
     private Jaguar rightDriveFP;
@@ -78,6 +80,8 @@ public class RobotTemplate extends IterativeRobot {
         
         driverLeft = new Joystick(2);
         driverRight = new Joystick(1);
+        
+        
 
     }
 
@@ -142,7 +146,7 @@ public class RobotTemplate extends IterativeRobot {
         lastRightInput = rightPower;
         
         if (Math.abs(leftPower) > FP_ACTIVATION_THRESHOLD) {
-            leftDriveFP.set(leftPower);
+            Drivetrain.driveLeftFP(leftPower);
         } else {
             leftDriveFP.set(0);
         }
