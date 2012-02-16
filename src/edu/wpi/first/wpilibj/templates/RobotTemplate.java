@@ -11,8 +11,9 @@ package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Joystick;
-import java.util.Timer;
+import robotHardware.Compressor;
 import robotHardware.Drivetrain;
+import robotHardware.Shooter;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -57,13 +58,13 @@ public class RobotTemplate extends IterativeRobot {
     
     public static double FP_ACTIVATION_THRESHOLD = 0.7;
     
-    private Timer timer;
     private Jaguar rightDrive;
     private Jaguar leftDrive;
     private Jaguar rightDriveFP;
     private Jaguar leftDriveFP;
     private Joystick driverLeft;
     private Joystick driverRight;
+    private Joystick operator;
     
     /*
      * the values curently being sent to the jaguars
@@ -71,18 +72,16 @@ public class RobotTemplate extends IterativeRobot {
     private double lastLeftInput = 0;
     private double lastRightInput = 0;
     
+    /*
+     * the values being sent to the jaguars.
+     */
+    private double leftOutput = 0;
+    private double rightOutput = 0;
+    
     public void robotInit() {
-        rightDrive = new Jaguar(5);
-        rightDriveFP = new Jaguar(6);
-        
-        leftDrive = new Jaguar(7);
-        leftDriveFP = new Jaguar(8);
-        
         driverLeft = new Joystick(2);
         driverRight = new Joystick(1);
-        
-        
-
+        operator = new Joystick(3);
     }
 
     /**
@@ -97,7 +96,11 @@ public class RobotTemplate extends IterativeRobot {
      */
     public void teleopPeriodic() {
         drive(driverLeft.getY(), driverRight.getY());
-        System.out.println(Math.abs(driverLeft.getY() - lastLeftInput));
+        Compressor.run();
+    }
+    
+    public void disabledInit() {
+        Compressor.stop();
     }
     
     private void drive(double leftJoystick, double rightJoystick) {
@@ -128,11 +131,11 @@ public class RobotTemplate extends IterativeRobot {
          /*
          * if the difference of the 2 power values are within the threshold, sets both to their average
          */
-        /*if (Math.abs(leftPower - rightPower) < EQUALIZATION_THRESHOLD) {
+        if (Math.abs(leftPower - rightPower) < EQUALIZATION_THRESHOLD) {
             double averagePower = (leftPower + rightPower)/2;
             leftPower = averagePower;
             rightPower = averagePower;
-        }*/
+        }
         
         /*
          * if both drives are moting in the same direction, sets them closer to each other.
@@ -148,16 +151,23 @@ public class RobotTemplate extends IterativeRobot {
         if (Math.abs(leftPower) > FP_ACTIVATION_THRESHOLD) {
             Drivetrain.driveLeftFP(leftPower);
         } else {
-            leftDriveFP.set(0);
+            Drivetrain.driveLeftFP(0);
         }
         if (Math.abs(rightPower) > FP_ACTIVATION_THRESHOLD) {
-            rightDriveFP.set(rightPower);
+            Drivetrain.driveRightFP(rightPower);
         } else {
-            rightDriveFP.set(0);
+            Drivetrain.driveRightFP(0);
         }
         
-        rightDrive.set(rightPower);
-        leftDrive.set(leftPower);
+        Drivetrain.driveCIMs(leftPower, rightPower);
+        
+        if (operator.getRawButton(7)) {
+            Shooter.startShooter(1);
+        } else {
+            Shooter.stopShooter();
+        }
+
+        Shooter.advanceBall(operator.getRawAxis(2), operator.getRawAxis(3));
         
     }
     

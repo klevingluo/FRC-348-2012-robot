@@ -12,9 +12,9 @@ import edu.wpi.first.wpilibj.camera.AxisCamera;
  */
 public class Camera {
     
-    private static AxisCamera camera = AxisCamera.getInstance(ControlMap.cameraIP);
+    private static AxisCamera camera = AxisCamera.getInstance(RobotMap.cameraIP);
     
     public static void getImage() {
-        
+      
     }
 }

@@ -12,16 +12,27 @@ import edu.wpi.first.wpilibj.Jaguar;
  */
 public class Shooter {
     
-    private static Jaguar lowerConveyor = new Jaguar(ControlMap.lowerBallConveyor);
-    private static Jaguar upperConveyor = new Jaguar(ControlMap.upperBallConveyor);
-    private static Jaguar shooter = new Jaguar(ControlMap.shooter);
+    private static Jaguar lowerConveyor = new Jaguar(RobotMap.lowerBallConveyor);
+    private static Jaguar upperConveyor = new Jaguar(RobotMap.upperBallConveyor);
+    private static Jaguar shooter = new Jaguar(RobotMap.shooter);
     
-    public static void shoot() {
-        
+    public static void startShooter(double power) {
+        shooter.set(power);
+    } 
+    
+    public static void stopShooter() {
+        shooter.set(0);
     }
     
-    public static void takeBall() {
-        
+    public static void advanceBall(double lowerConveyorPower, double upperConveyorPower) {
+        lowerConveyor.set(lowerConveyorPower);
+        upperConveyor.set(upperConveyorPower);
     }
+    
+    public static void stopAdvance() {
+        lowerConveyor.set(0);
+        upperConveyor.set(0);        
+    }
+    
             
 }

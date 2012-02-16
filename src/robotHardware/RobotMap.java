@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.Jaguar;
  *
  * @author team348
  */
-public class ControlMap {
+public class RobotMap {
     
     public static final int
       // jaguars
@@ -18,17 +18,18 @@ public class ControlMap {
         rightDriveFP      = 6,  
         leftDriveCIMs     = 7,
         leftDriveFP       = 8,
-        lowerBallConveyor = 2,
+        lowerBallConveyor = 4,
         upperBallConveyor = 3,
-        shooter           = 4,
+        shooter           = 2,
       // relays
-        compressor        = 1,
+        compressor        = 8,
         fan1              = 2,
         fan2              = 3,
       // solenoids
         puck              = 1,
+        arm               = 2,
       //digital inputs
-        pressureSwitch    = 2;
+        pressureSwitch    = 1;
     public static final String
         cameraIP          = "10.3.48.7";
     

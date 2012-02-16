@@ -13,11 +13,11 @@ import edu.wpi.first.wpilibj.Solenoid;
  */
 public class Drivetrain {
     
-        private static Jaguar rightDriveCIMs    = new Jaguar(ControlMap.rightDriveCIMs);
-        private static Jaguar rightDriveFP      = new Jaguar(ControlMap.rightDriveFP);  
-        private static Jaguar leftDriveCIMs     = new Jaguar(ControlMap.leftDriveCIMs);
-        private static Jaguar leftDriveFP       = new Jaguar(ControlMap.leftDriveFP);
-        private static Solenoid puck            = new Solenoid(ControlMap.puck);
+        private static Jaguar rightDriveCIMs    = new Jaguar(RobotMap.rightDriveCIMs);
+        private static Jaguar rightDriveFP      = new Jaguar(RobotMap.rightDriveFP);  
+        private static Jaguar leftDriveCIMs     = new Jaguar(RobotMap.leftDriveCIMs);
+        private static Jaguar leftDriveFP       = new Jaguar(RobotMap.leftDriveFP);
+        private static Solenoid puck            = new Solenoid(RobotMap.puck);
         
         public static void driveCIMs(double leftSpeed, double rightSpeed) {
             leftDriveCIMs.set(leftSpeed);
