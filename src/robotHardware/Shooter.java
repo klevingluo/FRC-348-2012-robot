@@ -34,5 +34,12 @@ public class Shooter {
         upperConveyor.set(0);        
     }
     
+    public static void startIntake(double power) {
+        lowerConveyor.set(power);
+    }
+    
+    public static void startFeeder(double power) {
+        upperConveyor.set(power);
+    }
             
 }

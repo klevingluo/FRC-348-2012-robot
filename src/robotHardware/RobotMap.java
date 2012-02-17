@@ -29,7 +29,7 @@ public class RobotMap {
         puck              = 1,
         arm               = 2,
       //digital inputs
-        pressureSwitch    = 1;
+        pressureSwitch    = 2;
     public static final String
         cameraIP          = "10.3.48.7";
     

@@ -14,14 +14,14 @@ import edu.wpi.first.wpilibj.Relay;
 public class Compressor {
     
     private static Relay compressor = new Relay(RobotMap.compressor, Relay.Direction.kForward);
-    private static DigitalInput pressureSwitch = new DigitalInput(RobotMap.pressureSwitch);
+    public static DigitalInput pressureSwitch = new DigitalInput(RobotMap.pressureSwitch);
     
     public static void run() {
-        //if (Compressor.isFull()) {
-        //    compressor.set(Relay.Value.kOff);    
-        //} else {
-        //    compressor.set(Relay.Value.kOn);
-        //}
+        if (Compressor.isFull()) {
+            stop();    
+        } else {
+            compressor.set(Relay.Value.kOn);
+        }
     }
     
     public static void stop () {
@@ -29,7 +29,7 @@ public class Compressor {
     }
     
     public static boolean isFull() {
-        return pressureSwitch.get();
+        return !pressureSwitch.get();
     }
     
 }

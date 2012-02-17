@@ -11,7 +11,9 @@ package edu.wpi.first.wpilibj.templates;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Joystick;
-import robotHardware.Compressor;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Compressor;
+//import robotHardware.Compressor;
 import robotHardware.Drivetrain;
 import robotHardware.Shooter;
 
@@ -58,13 +60,11 @@ public class RobotTemplate extends IterativeRobot {
     
     public static double FP_ACTIVATION_THRESHOLD = 0.7;
     
-    private Jaguar rightDrive;
-    private Jaguar leftDrive;
-    private Jaguar rightDriveFP;
-    private Jaguar leftDriveFP;
     private Joystick driverLeft;
     private Joystick driverRight;
     private Joystick operator;
+    private Timer timer;
+    private Compressor compressor = new Compressor(2,8);
     
     /*
      * the values curently being sent to the jaguars
@@ -72,16 +72,11 @@ public class RobotTemplate extends IterativeRobot {
     private double lastLeftInput = 0;
     private double lastRightInput = 0;
     
-    /*
-     * the values being sent to the jaguars.
-     */
-    private double leftOutput = 0;
-    private double rightOutput = 0;
-    
     public void robotInit() {
         driverLeft = new Joystick(2);
         driverRight = new Joystick(1);
         operator = new Joystick(3);
+        timer = new Timer();
     }
 
     /**
@@ -91,16 +86,48 @@ public class RobotTemplate extends IterativeRobot {
 
     }
 
+    public void teleopInit() {
+        timer.start();
+        compressor.start();
+    }
+    
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+        
+        if (timer.get() > 1)
         drive(driverLeft.getY(), driverRight.getY());
-        Compressor.run();
+        System.out.println(compressor.getPressureSwitchValue());
+        //Compressor.run();
+        //System.out.println(Compressor.pressureSwitch.get());
+        
+        if (operator.getRawButton(7)) {
+            
+            Shooter.startShooter(-1);
+            
+        } else {
+            
+            Shooter.stopShooter();
+        }
+        
+        if(operator.getRawButton(8)) {
+            Shooter.startFeeder(1);
+        } else if (operator.getRawButton(6)) {
+            Shooter.startFeeder(-1);
+        } else {
+            Shooter.startFeeder(0);
+        }
+        
+        Shooter.startIntake(operator.getRawAxis(2));
     }
     
     public void disabledInit() {
-        Compressor.stop();
+        
+        compressor.stop();
+        timer.stop();
+        timer.reset();
+        
     }
     
     private void drive(double leftJoystick, double rightJoystick) {
@@ -111,21 +138,45 @@ public class RobotTemplate extends IterativeRobot {
         /*
          * slows down acceleration if joystick input changes too quickly
          */
-        if (leftPower > 0 == rightPower > 0) {
-            if(Math.abs(leftPower - lastLeftInput) > ACCELERATION_THRESHOLD)
-                if(leftPower < -0.05)
-                    leftPower = lastLeftInput - ACCELERATION_THRESHOLD;
-                else if (leftPower > 0.05)
-                    leftPower = lastLeftInput + ACCELERATION_THRESHOLD;
-                else
-                    leftPower = 0;
-            if(Math.abs(rightPower - lastRightInput) > ACCELERATION_THRESHOLD)
-                if (rightPower < -0.05)
-                    rightPower = lastRightInput - ACCELERATION_THRESHOLD;
-                else if (rightPower > 0.05)
-                    rightPower = lastRightInput + ACCELERATION_THRESHOLD;
-                else
-                    rightPower = 0;
+        
+        if(leftPower > 0 && lastLeftInput <=0) {
+        
+            if (leftPower > 0 == rightPower > 0) {
+
+                if(Math.abs(leftPower - lastLeftInput) > ACCELERATION_THRESHOLD) {
+
+                    if(Math.abs(leftPower-lastLeftInput) <= 0.5) {
+
+                    } else if(leftPower < lastLeftInput) {
+
+                        leftPower = lastLeftInput - ACCELERATION_THRESHOLD;
+
+                    } else if (leftPower > lastLeftInput) {
+
+                        leftPower = lastLeftInput + ACCELERATION_THRESHOLD;
+
+                    }
+
+                }
+
+                if(Math.abs(rightPower - lastRightInput) > ACCELERATION_THRESHOLD){
+
+                    if (Math.abs(rightPower-lastRightInput) <= .05) {
+
+                    } else if (rightPower < lastRightInput) {
+
+                        rightPower = lastRightInput - ACCELERATION_THRESHOLD;
+
+                    } else if (rightPower > lastRightInput) {
+
+                        rightPower = lastRightInput + ACCELERATION_THRESHOLD;
+
+                    }
+
+                }
+
+            }
+            
         }
         
          /*
@@ -161,13 +212,7 @@ public class RobotTemplate extends IterativeRobot {
         
         Drivetrain.driveCIMs(leftPower, rightPower);
         
-        if (operator.getRawButton(7)) {
-            Shooter.startShooter(1);
-        } else {
-            Shooter.stopShooter();
-        }
 
-        Shooter.advanceBall(operator.getRawAxis(2), operator.getRawAxis(3));
         
     }
     
