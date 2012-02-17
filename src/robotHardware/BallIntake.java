@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.Jaguar;
 public class BallIntake {
     
     
-    private static Jaguar intake = new Jaguar(RobotMap.lowerBallConveyor);
+    private static Jaguar intake = Shooter.lowerConveyor;
     
     public static void run(double power) {
         intake.set(power);

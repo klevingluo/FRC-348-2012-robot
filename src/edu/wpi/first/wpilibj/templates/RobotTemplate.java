@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Compressor;
-//import robotHardware.Compressor;
 import robotHardware.Drivetrain;
+import robotHardware.RobotMap;
 import robotHardware.Shooter;
 
 /**
@@ -64,7 +64,7 @@ public class RobotTemplate extends IterativeRobot {
     private Joystick driverRight;
     private Joystick operator;
     private Timer timer;
-    private Compressor compressor = new Compressor(2,8);
+    private Compressor compressor = new Compressor(RobotMap.pressureSwitch, RobotMap.compressor);
     
     /*
      * the values curently being sent to the jaguars
@@ -99,15 +99,10 @@ public class RobotTemplate extends IterativeRobot {
         if (timer.get() > 1)
         drive(driverLeft.getY(), driverRight.getY());
         System.out.println(compressor.getPressureSwitchValue());
-        //Compressor.run();
-        //System.out.println(Compressor.pressureSwitch.get());
         
         if (operator.getRawButton(7)) {
-            
-            Shooter.startShooter(-1);
-            
-        } else {
-            
+            Shooter.runShooter(1);         
+        } else {    
             Shooter.stopShooter();
         }
         
@@ -123,7 +118,7 @@ public class RobotTemplate extends IterativeRobot {
     }
     
     public void disabledInit() {
-        
+       
         compressor.stop();
         timer.stop();
         timer.reset();
@@ -144,35 +139,19 @@ public class RobotTemplate extends IterativeRobot {
             if (leftPower > 0 == rightPower > 0) {
 
                 if(Math.abs(leftPower - lastLeftInput) > ACCELERATION_THRESHOLD) {
-
-                    if(Math.abs(leftPower-lastLeftInput) <= 0.5) {
-
-                    } else if(leftPower < lastLeftInput) {
-
+                    if(leftPower < lastLeftInput) {
                         leftPower = lastLeftInput - ACCELERATION_THRESHOLD;
-
                     } else if (leftPower > lastLeftInput) {
-
                         leftPower = lastLeftInput + ACCELERATION_THRESHOLD;
-
                     }
-
                 }
 
                 if(Math.abs(rightPower - lastRightInput) > ACCELERATION_THRESHOLD){
-
-                    if (Math.abs(rightPower-lastRightInput) <= .05) {
-
-                    } else if (rightPower < lastRightInput) {
-
+                    if (rightPower < lastRightInput) {
                         rightPower = lastRightInput - ACCELERATION_THRESHOLD;
-
                     } else if (rightPower > lastRightInput) {
-
                         rightPower = lastRightInput + ACCELERATION_THRESHOLD;
-
                     }
-
                 }
 
             }
