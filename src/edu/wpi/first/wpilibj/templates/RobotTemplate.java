@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Compressor;
 import robotHardware.Drivetrain;
+import robotHardware.RampArm;
 import robotHardware.RobotMap;
 import robotHardware.Shooter;
 
@@ -96,25 +97,28 @@ public class RobotTemplate extends IterativeRobot {
      */
     public void teleopPeriodic() {
         
-        if (timer.get() > 1)
-        drive(driverLeft.getY(), driverRight.getY());
-        System.out.println(compressor.getPressureSwitchValue());
+        if (timer.get() > 0.05) {
+            timer.reset();
+            timer.start();
+            drive(driverLeft.getY(), driverRight.getY());
+        }
         
-        if (operator.getRawButton(7)) {
+        if (operator.getRawButton(6)) {
             Shooter.runShooter(1);         
         } else {    
             Shooter.stopShooter();
         }
         
-        if(operator.getRawButton(8)) {
+        if(operator.getRawButton(7)) {
             Shooter.startFeeder(1);
-        } else if (operator.getRawButton(6)) {
+        } else if (operator.getRawButton(5)) {
             Shooter.startFeeder(-1);
         } else {
             Shooter.startFeeder(0);
         }
         
-        Shooter.startIntake(operator.getRawAxis(2));
+        Shooter.startIntake(operator.getRawAxis(3));
+        
     }
     
     public void disabledInit() {
@@ -132,12 +136,10 @@ public class RobotTemplate extends IterativeRobot {
         
         /*
          * slows down acceleration if joystick input changes too quickly
-         */
-        
+         */       
         if(leftPower > 0 && lastLeftInput <=0) {
         
             if (leftPower > 0 == rightPower > 0) {
-
                 if(Math.abs(leftPower - lastLeftInput) > ACCELERATION_THRESHOLD) {
                     if(leftPower < lastLeftInput) {
                         leftPower = lastLeftInput - ACCELERATION_THRESHOLD;
@@ -153,9 +155,7 @@ public class RobotTemplate extends IterativeRobot {
                         rightPower = lastRightInput + ACCELERATION_THRESHOLD;
                     }
                 }
-
             }
-            
         }
         
          /*
@@ -178,21 +178,33 @@ public class RobotTemplate extends IterativeRobot {
         lastLeftInput = leftPower;
         lastRightInput = rightPower;
         
+        // runs the FP motors
         if (Math.abs(leftPower) > FP_ACTIVATION_THRESHOLD) {
             Drivetrain.driveLeftFP(leftPower);
         } else {
             Drivetrain.driveLeftFP(0);
         }
+        
         if (Math.abs(rightPower) > FP_ACTIVATION_THRESHOLD) {
             Drivetrain.driveRightFP(rightPower);
         } else {
             Drivetrain.driveRightFP(0);
         }
-        
+        // runs the Cims
         Drivetrain.driveCIMs(leftPower, rightPower);
         
-
+        // lowers puck if drivetrains are in different directions or button is pressed
+        if (driverLeft.getButton(Joystick.ButtonType.kTop) || Math.abs(leftPower - rightPower) > 0.3) {
+            Drivetrain.lowerPuck();
+        } else {
+            Drivetrain.raisePuck();
+        }
         
+        // lowers arm if operator signals
+        if (operator.getRawButton(3)) {
+            RampArm.lower();
+        } else RampArm.raise();
+
     }
     
 }
