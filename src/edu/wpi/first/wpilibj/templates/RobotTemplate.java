@@ -79,12 +79,23 @@ public class RobotTemplate extends IterativeRobot {
         operator = new Joystick(3);
         timer = new Timer();
     }
+    
+    public void autonomousInit() {
+        Shooter.advanceBall(1, 1);
+        Shooter.runShooter(1);
+        timer.start();
+    }
 
     /**
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-
+        if (timer.get() > 15) {
+            timer.stop();
+            timer.reset();
+            Shooter.stopShooter();
+            Shooter.stopAdvance();
+        }
     }
 
     public void teleopInit() {
