@@ -25,7 +25,7 @@ public class Shooter {
     }
     
     public static void advanceBall(double lowerConveyorPower, double upperConveyorPower) {
-        lowerConveyor.set(lowerConveyorPower);
+        lowerConveyor.set(-lowerConveyorPower);
         upperConveyor.set(upperConveyorPower);
     }
     

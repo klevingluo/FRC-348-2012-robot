@@ -15,11 +15,11 @@ public class RampArm {
     private static Solenoid arm = new Solenoid(RobotMap.arm);
     
     public static void raise() {   
-        arm.set(true);      
+        arm.set(false);
     }
     
     public static void lower() {
-        arm.set(false); 
+        arm.set(true); 
     }
     
 }

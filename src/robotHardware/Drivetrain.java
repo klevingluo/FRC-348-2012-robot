@@ -52,4 +52,8 @@ public class Drivetrain {
         public static void raisePuck(){
             puck.set(false);
         }
+        
+        public static boolean isPucklowered() {
+            return puck.get();
+        }
 }
