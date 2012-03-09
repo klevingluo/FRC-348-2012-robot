@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.GenericHID;
 import robotHardware.Drivetrain;
 import robotHardware.RampArm;
 import robotHardware.RobotMap;
@@ -81,21 +82,27 @@ public class RobotTemplate extends IterativeRobot {
     }
     
     public void autonomousInit() {
-        Shooter.advanceBall(1, 1);
-        Shooter.runShooter(1);
         timer.start();
+        compressor.start();
+        while (timer.get() < 1.2) {
+            Drivetrain.driveCIMs(-.4,- .4);
+        }
+        
+        while (timer.get() < 14) {
+            Drivetrain.driveCIMs(0,0);
+            Shooter.advanceBall(1, 1);
+            Shooter.runShooter(1);
+        }
+
+        Shooter.stopAdvance();
+        Shooter.runShooter(0);
     }
 
     /**
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-        if (timer.get() > 15) {
-            timer.stop();
-            timer.reset();
-            Shooter.stopShooter();
-            Shooter.stopAdvance();
-        }
+
     }
 
     public void teleopInit() {
@@ -108,15 +115,16 @@ public class RobotTemplate extends IterativeRobot {
      */
     public void teleopPeriodic() {
         
-        if (timer.get() > 0.05) {
-            timer.reset();
-            timer.start();
+        // this is new
+        //if (timer.get() > 0.05) {
+        //    timer.reset();
+        //    timer.start();
             drive(driverLeft.getY(), driverRight.getY());
-        }
+        //}
         
-        if (operator.getRawButton(6)) {
+        if (operator.getRawButton(6) || operator.getRawButton(8)) {
             Shooter.runShooter(1);         
-        } else {    
+        } else {
             Shooter.stopShooter();
         }
         
@@ -127,8 +135,14 @@ public class RobotTemplate extends IterativeRobot {
         } else {
             Shooter.startFeeder(0);
         }
-        
-        Shooter.startIntake(operator.getRawAxis(3));
+        if (operator.getRawAxis(3) != 0) {
+            Shooter.startIntake(operator.getRawAxis(3));
+        } else Shooter.startIntake(operator.getRawAxis(6));
+                
+        // lowers arm if operator signals
+        if (operator.getRawButton(3)) {
+            RampArm.lower();
+        } else RampArm.raise();
         
     }
     
@@ -144,6 +158,12 @@ public class RobotTemplate extends IterativeRobot {
         
         double leftPower = leftJoystick;
         double rightPower = rightJoystick;
+        
+                
+        if (driverRight.getButton(Joystick.ButtonType.kTrigger)){
+            leftPower *= 0.4;
+            rightPower *= 0.4;
+        }
         
         /*
          * slows down acceleration if joystick input changes too quickly
@@ -190,13 +210,13 @@ public class RobotTemplate extends IterativeRobot {
         lastRightInput = rightPower;
         
         // runs the FP motors
-        if (Math.abs(leftPower) > FP_ACTIVATION_THRESHOLD) {
+        if (Math.abs(leftPower) > FP_ACTIVATION_THRESHOLD && (leftPower > 0 == rightPower > 0) && !Drivetrain.isPucklowered()) {
             Drivetrain.driveLeftFP(leftPower);
         } else {
             Drivetrain.driveLeftFP(0);
         }
         
-        if (Math.abs(rightPower) > FP_ACTIVATION_THRESHOLD) {
+        if (Math.abs(rightPower) > FP_ACTIVATION_THRESHOLD && (leftPower > 0 == rightPower > 0) && !Drivetrain.isPucklowered()) {
             Drivetrain.driveRightFP(rightPower);
         } else {
             Drivetrain.driveRightFP(0);
@@ -205,17 +225,12 @@ public class RobotTemplate extends IterativeRobot {
         Drivetrain.driveCIMs(leftPower, rightPower);
         
         // lowers puck if drivetrains are in different directions or button is pressed
-        if (driverLeft.getButton(Joystick.ButtonType.kTop) || Math.abs(leftPower - rightPower) > 0.3) {
+        if (driverLeft.getButton(Joystick.ButtonType.kTrigger)) { // || Math.abs(leftPower - rightPower) > 0.3) {
             Drivetrain.lowerPuck();
         } else {
             Drivetrain.raisePuck();
         }
-        
-        // lowers arm if operator signals
-        if (operator.getRawButton(3)) {
-            RampArm.lower();
-        } else RampArm.raise();
 
     }
-    
+
 }
