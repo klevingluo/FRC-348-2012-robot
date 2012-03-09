@@ -84,19 +84,20 @@ public class RobotTemplate extends IterativeRobot {
     public void autonomousInit() {
         timer.start();
         compressor.start();
-        while (timer.get() < 1.5) {
+        while (timer.get() < 1.3) {
             Drivetrain.driveCIMs(-.4,- .4);
         }
-        while (timer.get() < 2.5) {
-            Drivetrain.driveCIMs(-0.1, -0.1);
+        while (timer.get() < 2.7) {
+            Drivetrain.driveCIMs(-0.2, -0.2);
         }
         
         while (timer.get() < 14) {
-            Drivetrain.driveCIMs(0,0);
+            Drivetrain.driveCIMs(-0.2, -0.2);
             Shooter.advanceBall(1, 1);
             Shooter.runShooter(0.7);
         }
 
+        Drivetrain.driveCIMs(0,0);
         Shooter.stopAdvance();
         Shooter.runShooter(0);
     }
