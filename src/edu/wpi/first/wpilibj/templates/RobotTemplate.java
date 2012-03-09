@@ -84,14 +84,17 @@ public class RobotTemplate extends IterativeRobot {
     public void autonomousInit() {
         timer.start();
         compressor.start();
-        while (timer.get() < 1.2) {
+        while (timer.get() < 1.5) {
             Drivetrain.driveCIMs(-.4,- .4);
+        }
+        while (timer.get() < 2.5) {
+            Drivetrain.driveCIMs(-0.1, -0.1);
         }
         
         while (timer.get() < 14) {
             Drivetrain.driveCIMs(0,0);
             Shooter.advanceBall(1, 1);
-            Shooter.runShooter(1);
+            Shooter.runShooter(0.7);
         }
 
         Shooter.stopAdvance();
@@ -123,7 +126,7 @@ public class RobotTemplate extends IterativeRobot {
         //}
         
         if (operator.getRawButton(6) || operator.getRawButton(8)) {
-            Shooter.runShooter(1);         
+            Shooter.runShooter(.7);         
         } else {
             Shooter.stopShooter();
         }
