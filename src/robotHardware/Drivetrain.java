@@ -4,6 +4,7 @@
  */
 package robotHardware;
 
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Solenoid;
 
@@ -18,6 +19,8 @@ public class Drivetrain {
         private static Jaguar leftDriveCIMs     = new Jaguar(RobotMap.leftDriveCIMs);
         private static Jaguar leftDriveFP       = new Jaguar(RobotMap.leftDriveFP);
         private static Solenoid puck            = new Solenoid(RobotMap.puck);
+        private static DigitalOutput leftCIMBrakes = new DigitalOutput(RobotMap.leftCIMBrakes);
+        private static DigitalOutput rightCIMBrakes = new DigitalOutput(RobotMap.rightCIMBrakes);
         
         public static void driveCIMs(double leftSpeed, double rightSpeed) {
             leftDriveCIMs.set(leftSpeed);
@@ -43,6 +46,22 @@ public class Drivetrain {
         
         public static void driveLeftFP(double speed) {
             leftDriveFP.set(speed);
+        }
+        
+        public static void brakeLeft() {
+            leftCIMBrakes.set(true);
+        }
+        
+        public static void coastLeft() {
+            leftCIMBrakes.set(false);
+        }
+        
+        public static void brakeRight() {
+            rightCIMBrakes.set(true);
+        }
+        
+        public static void coastRight() {
+            rightCIMBrakes.set(false);
         }
         
         public static void lowerPuck(){
