@@ -49,19 +49,19 @@ public class Drivetrain {
         }
         
         public static void brakeLeft() {
-            leftCIMBrakes.set(true);
-        }
-        
-        public static void coastLeft() {
             leftCIMBrakes.set(false);
         }
         
+        public static void coastLeft() {
+            leftCIMBrakes.set(true);
+        }
+        
         public static void brakeRight() {
-            rightCIMBrakes.set(true);
+            rightCIMBrakes.set(false);
         }
         
         public static void coastRight() {
-            rightCIMBrakes.set(false);
+            rightCIMBrakes.set(true);
         }
         
         public static void lowerPuck(){

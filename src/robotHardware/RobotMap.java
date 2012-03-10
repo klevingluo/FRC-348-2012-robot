@@ -22,8 +22,8 @@ public class RobotMap {
         upperBallConveyor = 3,
         shooter           = 2,
       // digital outputs
-        leftCIMBrakes     = 1,
-        rightCIMBrakes    = 2,
+        leftCIMBrakes     = 10,
+        rightCIMBrakes    = 9,
       // relays
         compressor        = 8,
         fan1              = 2,
