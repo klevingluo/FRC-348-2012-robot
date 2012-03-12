@@ -84,11 +84,11 @@ public class RobotTemplate extends IterativeRobot {
     public void autonomousInit() {
         timer.start();
         compressor.start();
-        while (timer.get() < 1.5) {
+        while (timer.get() < 1.4) {
             Drivetrain.driveCIMs(-.4,- .4);
         }
-        while (timer.get() < 3.2) {
-            Drivetrain.driveCIMs(-0.17, -0.17);
+        while (timer.get() < 3.1) {
+            Drivetrain.driveCIMs(-0.2, -0.2);
         }
         
         while (timer.get() < 14) {
