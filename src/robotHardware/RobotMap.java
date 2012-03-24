@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * wiring for robot outputs
  */
 package robotHardware;
 
@@ -21,9 +20,6 @@ public class RobotMap {
         lowerBallConveyor = 4,
         upperBallConveyor = 3,
         shooter           = 2,
-      // digital outputs
-        leftCIMBrakes     = 10,
-        rightCIMBrakes    = 9,
       // relays
         compressor        = 8,
         fan1              = 2,
@@ -32,7 +28,10 @@ public class RobotMap {
         puck              = 1,
         arm               = 2,
       //digital inputs
-        pressureSwitch    = 2;
+        pressureSwitch    = 2,
+      // digital outputs
+        leftCIMBrakes     = 10,
+        rightCIMBrakes    = 9;
     public static final String
         cameraIP          = "10.3.48.7";
     

@@ -8,58 +8,35 @@
 package edu.wpi.first.wpilibj.templates;
 
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.GenericHID;
 import robotHardware.Drivetrain;
 import robotHardware.RampArm;
 import robotHardware.RobotMap;
 import robotHardware.Shooter;
 
 /**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the manifest file in the resource
- * directory.
+ *
  */
 public class RobotTemplate extends IterativeRobot {
-    /**
-     * This function is run when the robot is first started up and should be
-     * used for any initialization code.
-     */
     
     /*
-     * the value used to equalize the drives if they are moving in the same direction
-     * must be between 0 and 1
-     * lower values will make the robot veer more easily
-     */
-    public static double EQUALIZATION_FACTOR = 0.2;
-    
-    /*
-     * if the difference b/w the motor values after the equalization divisor is applied, they are set to be equal.
+     * if the difference between the motor values are less than this they are set to be equal.
      * must be between 0 and 2
-     * higher values will make the robot drive straighter
      */
     public static double EQUALIZATION_THRESHOLD = 0.1;
     
     /*
-     * slows down acceleration if input changes faster than this
+     * slows down acceleration if input changes faster than this in 1 iteration of the loop
      * must be between 0 and 2
-     * higher values will make the robot limit acceleration more
      */
     public static double ACCELERATION_THRESHOLD = 0.03;
     
     /*
-     * slows down acceleration by this factor if input acceleration exceeds the limit above
-     * must be between 0 and 1
-     * lower values will make the robot acclerate slower when limiting is in effect.
+     * activates the fisher price motors if power is above this level
      */
-    public static double ACCELERATION_FACTOR = 0.7;
-    
     public static double FP_ACTIVATION_THRESHOLD = 0.7;
     
     private Joystick driverLeft;
@@ -74,6 +51,9 @@ public class RobotTemplate extends IterativeRobot {
     private double lastLeftInput = 0;
     private double lastRightInput = 0;
     
+    /*
+     * creates all objects
+     */
     public void robotInit() {
         driverLeft = new Joystick(2);
         driverRight = new Joystick(1);
@@ -85,7 +65,7 @@ public class RobotTemplate extends IterativeRobot {
         timer.start();
         compressor.start();
         while (timer.get() < 1.4) {
-            Drivetrain.driveCIMs(-.4,- .4);
+            Drivetrain.driveCIMs(-.4,- .4);  // CIM outputs and joystick inputs are both backwards
         }
         while (timer.get() < 3.1) {
             Drivetrain.driveCIMs(-0.2, -0.2);
@@ -101,13 +81,6 @@ public class RobotTemplate extends IterativeRobot {
         Shooter.runShooter(0);
     }
 
-    /**
-     * This function is called periodically during autonomous
-     */
-    public void autonomousPeriodic() {
-
-    }
-
     public void teleopInit() {
         timer.start();
         compressor.start();
@@ -118,13 +91,18 @@ public class RobotTemplate extends IterativeRobot {
      */
     public void teleopPeriodic() {
         
-        // this is new
-        //if (timer.get() > 0.05) {
-        //    timer.reset();
-        //    timer.start();
+        /*  uninplemented feature that uses real time in controlling acceleration
+        if (timer.get() > 0.05) {
+            timer.reset();
+            timer.start();
             drive(driverLeft.getY(), driverRight.getY());
-        //}
-            
+        } */
+        
+        drive(driverLeft.getY(), driverRight.getY());
+        
+        /*
+         * runs brakes if top buttons are depressed
+         */
         if (driverRight.getRawButton(3) || driverLeft.getRawButton(3)) {
             Drivetrain.brakeLeft();
             Drivetrain.brakeRight();
@@ -133,24 +111,34 @@ public class RobotTemplate extends IterativeRobot {
             Drivetrain.coastRight();
         }
         
+        /*
+         * runs shooter if operator right shoulder buttons are pressed
+         */
         if (operator.getRawButton(6) || operator.getRawButton(8)) {
             Shooter.runShooter(.7);         
         } else {
             Shooter.stopShooter();
         }
         
+        /*
+         * runs feeder according to operator left shoulder buttons
+         */
         if(operator.getRawButton(7)) {
-            Shooter.startFeeder(1);
+            Shooter.setFeeder(1);
         } else if (operator.getRawButton(5)) {
-            Shooter.startFeeder(-1);
+            Shooter.setFeeder(-1);
         } else {
-            Shooter.startFeeder(0);
+            Shooter.setFeeder(0);
         }
+        
+        /*
+         * runs intake according to left analog or d-pad input
+         */
         if (operator.getRawAxis(3) != 0) {
-            Shooter.startIntake(operator.getRawAxis(3));
-        } else Shooter.startIntake(operator.getRawAxis(6));
+            Shooter.setIntake(operator.getRawAxis(3));
+        } else Shooter.setIntake(operator.getRawAxis(6));
                 
-        // lowers arm if operator signals
+        // lowers arm if 3 is depressed
         if (operator.getRawButton(3)) {
             RampArm.lower();
         } else RampArm.raise();
@@ -158,11 +146,9 @@ public class RobotTemplate extends IterativeRobot {
     }
     
     public void disabledInit() {
-       
         compressor.stop();
         timer.stop();
         timer.reset();
-        
     }
     
     private void drive(double leftJoystick, double rightJoystick) {
@@ -185,7 +171,7 @@ public class RobotTemplate extends IterativeRobot {
                 if(Math.abs(leftPower - lastLeftInput) > ACCELERATION_THRESHOLD) {
                     if(leftPower < lastLeftInput) {
                         leftPower = lastLeftInput - ACCELERATION_THRESHOLD;
-                    } else if (leftPower > lastLeftInput) {
+                    } else {
                         leftPower = lastLeftInput + ACCELERATION_THRESHOLD;
                     }
                 }
@@ -193,7 +179,7 @@ public class RobotTemplate extends IterativeRobot {
                 if(Math.abs(rightPower - lastRightInput) > ACCELERATION_THRESHOLD){
                     if (rightPower < lastRightInput) {
                         rightPower = lastRightInput - ACCELERATION_THRESHOLD;
-                    } else if (rightPower > lastRightInput) {
+                    } else {
                         rightPower = lastRightInput + ACCELERATION_THRESHOLD;
                     }
                 }
@@ -208,14 +194,6 @@ public class RobotTemplate extends IterativeRobot {
             leftPower = averagePower;
             rightPower = averagePower;
         }
-        
-        /*
-         * if both drives are moting in the same direction, sets them closer to each other.
-         */
-        /*if(leftJoystick < 0 == rightJoystick < 0) {
-            leftPower -= (leftJoystick - rightJoystick)*EQUALIZATION_FACTOR;
-            rightPower -= (rightJoystick - leftJoystick)*EQUALIZATION_FACTOR;
-        }*/
         
         lastLeftInput = leftPower;
         lastRightInput = rightPower;
@@ -235,8 +213,8 @@ public class RobotTemplate extends IterativeRobot {
         // runs the Cims
         Drivetrain.driveCIMs(leftPower, rightPower);
         
-        // lowers puck if drivetrains are in different directions or button is pressed
-        if (driverLeft.getButton(Joystick.ButtonType.kTrigger)) { // || Math.abs(leftPower - rightPower) > 0.3) {
+        // lowers puck if trigger is depressed
+        if (driverLeft.getButton(Joystick.ButtonType.kTrigger)) {
             Drivetrain.lowerPuck();
         } else {
             Drivetrain.raisePuck();

@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * cotrols shooter and ball intake
  */
 package robotHardware;
 
@@ -17,7 +16,7 @@ public class Shooter {
     private static Jaguar shooter = new Jaguar(RobotMap.shooter);
     
     public static void runShooter(double power) {
-        shooter.set(-power);
+        shooter.set(-power);    // shooter is backwards
     } 
     
     public static void stopShooter() {
@@ -25,20 +24,23 @@ public class Shooter {
     }
     
     public static void advanceBall(double lowerConveyorPower, double upperConveyorPower) {
-        lowerConveyor.set(-lowerConveyorPower);
+        lowerConveyor.set(-lowerConveyorPower);     // lower conveyor is bakcwards
         upperConveyor.set(upperConveyorPower);
     }
     
+    /*
+     * stops both feeder and intake
+     */
     public static void stopAdvance() {
         lowerConveyor.set(0);
         upperConveyor.set(0);        
     }
     
-    public static void startIntake(double power) {
+    public static void setIntake(double power) {
         lowerConveyor.set(power);
     }
     
-    public static void startFeeder(double power) {
+    public static void setFeeder(double power) {
         upperConveyor.set(power);
     }
             
