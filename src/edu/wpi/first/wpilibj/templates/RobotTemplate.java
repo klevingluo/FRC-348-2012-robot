@@ -22,23 +22,6 @@ import robotHardware.Shooter;
  */
 public class RobotTemplate extends IterativeRobot {
     
-    /*
-     * if the difference between the motor values are less than this they are set to be equal.
-     * must be between 0 and 2
-     */
-    public static double EQUALIZATION_THRESHOLD = 0.1;
-    
-    /*
-     * slows down acceleration if input changes faster than this in 1 iteration of the loop
-     * must be between 0 and 2
-     */
-    public static double ACCELERATION_THRESHOLD = 0.03;
-    
-    /*
-     * activates the fisher price motors if power is above this level
-     */
-    public static double FP_ACTIVATION_THRESHOLD = 0.7;
-    
     private Joystick driverLeft;
     private Joystick driverRight;
     private Joystick operator;
@@ -46,13 +29,7 @@ public class RobotTemplate extends IterativeRobot {
     private Compressor compressor = new Compressor(RobotMap.pressureSwitch, RobotMap.compressor);
     
     /*
-     * the values curently being sent to the jaguars
-     */
-    private double lastLeftInput = 0;
-    private double lastRightInput = 0;
-    
-    /*
-     * creates all objects
+     * creates all controll objects
      */
     public void robotInit() {
         driverLeft = new Joystick(2);
@@ -61,6 +38,9 @@ public class RobotTemplate extends IterativeRobot {
         timer = new Timer();
     }
     
+    /*
+     * autonomous code
+     */
     public void autonomousInit() {
         timer.start();
         compressor.start();
@@ -72,13 +52,12 @@ public class RobotTemplate extends IterativeRobot {
         }
         
         while (timer.get() < 14) {
-            Shooter.advanceBall(1, 1);
-            Shooter.runShooter(0.7);
+            Shooter.advanceBall();
+            Shooter.runShooter();
         }
-
         Drivetrain.driveCIMs(0,0);
-        Shooter.stopAdvance();
-        Shooter.runShooter(0);
+        Shooter.stopBall();
+        Shooter.runShooter();
     }
 
     public void teleopInit() {
@@ -98,7 +77,15 @@ public class RobotTemplate extends IterativeRobot {
             drive(driverLeft.getY(), driverRight.getY());
         } */
         
-        drive(driverLeft.getY(), driverRight.getY());
+        /*
+         * drives the robot
+         */
+        Drivetrain.drive(driverLeft.getY(), driverRight.getY());
+        
+        /*
+         * sets the drivetrain to slowmode if right trigger is deressed
+         */
+        Drivetrain.setSlow(driverRight.getButton(Joystick.ButtonType.kTrigger));
         
         /*
          * runs brakes if top buttons are depressed
@@ -115,7 +102,7 @@ public class RobotTemplate extends IterativeRobot {
          * runs shooter if operator right shoulder buttons are pressed
          */
         if (operator.getRawButton(6) || operator.getRawButton(8)) {
-            Shooter.runShooter(.7);         
+            Shooter.runShooter();         
         } else {
             Shooter.stopShooter();
         }
@@ -143,83 +130,19 @@ public class RobotTemplate extends IterativeRobot {
             RampArm.lower();
         } else RampArm.raise();
         
-    }
-    
-    public void disabledInit() {
-        compressor.stop();
-        timer.stop();
-        timer.reset();
-    }
-    
-    private void drive(double leftJoystick, double rightJoystick) {
-        
-        double leftPower = leftJoystick;
-        double rightPower = rightJoystick;
-        
-                
-        if (driverRight.getButton(Joystick.ButtonType.kTrigger)){
-            leftPower *= 0.4;
-            rightPower *= 0.4;
-        }
-        
-        /*
-         * slows down acceleration if joystick input changes too quickly
-         */       
-        if(leftPower > 0 && lastLeftInput <=0) {
-        
-            if (leftPower > 0 == rightPower > 0) {
-                if(Math.abs(leftPower - lastLeftInput) > ACCELERATION_THRESHOLD) {
-                    if(leftPower < lastLeftInput) {
-                        leftPower = lastLeftInput - ACCELERATION_THRESHOLD;
-                    } else {
-                        leftPower = lastLeftInput + ACCELERATION_THRESHOLD;
-                    }
-                }
-
-                if(Math.abs(rightPower - lastRightInput) > ACCELERATION_THRESHOLD){
-                    if (rightPower < lastRightInput) {
-                        rightPower = lastRightInput - ACCELERATION_THRESHOLD;
-                    } else {
-                        rightPower = lastRightInput + ACCELERATION_THRESHOLD;
-                    }
-                }
-            }
-        }
-        
-         /*
-         * if the difference of the 2 power values are within the threshold, sets both to their average
-         */
-        if (Math.abs(leftPower - rightPower) < EQUALIZATION_THRESHOLD) {
-            double averagePower = (leftPower + rightPower)/2;
-            leftPower = averagePower;
-            rightPower = averagePower;
-        }
-        
-        lastLeftInput = leftPower;
-        lastRightInput = rightPower;
-        
-        // runs the FP motors
-        if (Math.abs(leftPower) > FP_ACTIVATION_THRESHOLD && (leftPower > 0 == rightPower > 0) && !Drivetrain.isPucklowered()) {
-            Drivetrain.driveLeftFP(leftPower);
-        } else {
-            Drivetrain.driveLeftFP(0);
-        }
-        
-        if (Math.abs(rightPower) > FP_ACTIVATION_THRESHOLD && (leftPower > 0 == rightPower > 0) && !Drivetrain.isPucklowered()) {
-            Drivetrain.driveRightFP(rightPower);
-        } else {
-            Drivetrain.driveRightFP(0);
-        }
-        // runs the Cims
-        Drivetrain.driveCIMs(leftPower, rightPower);
-        
         // lowers puck if trigger is depressed
         if (driverLeft.getButton(Joystick.ButtonType.kTrigger)) {
             Drivetrain.lowerPuck();
         } else {
             Drivetrain.raisePuck();
         }
-
+        
+    }
+    
+    public void disabledInit() {
+        compressor.stop();
+        timer.stop();
+        timer.reset();
     }
 
 }
